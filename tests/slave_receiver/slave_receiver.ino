@@ -1,7 +1,7 @@
 /*
  (Receiver is connected on PIN 11
 
- Arduino                     Receiver
+ Arduino                     Receiver.
   GND--------------------------GND
   D11--------------------------Data
   5V---------------------------VCC
