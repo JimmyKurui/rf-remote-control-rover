@@ -5,12 +5,12 @@
 #define IN2 9
 #define IN3 7
 #define IN4 6
-#define ENA 11
+#define ENA 11`
 #define ENB 3
 #define POWER_RX 13
-#define M_IN3 4
-#define M_IN4 5
-#define M_ENB 13
+//#define M_IN3 4
+//#define M_IN4 5
+//#define M_ENB 13
 
 int speed = 150;
 int powerState;
@@ -28,15 +28,23 @@ void setup() {
   pinMode(ENA, OUTPUT);
   pinMode(ENB, OUTPUT);
   pinMode(POWER_RX, INPUT);
-  pinMode(M_IN3, OUTPUT);
-  pinMode(M_IN4, OUTPUT);
-  pinMode(M_ENB, OUTPUT);
+  //pinMode(M_IN3, OUTPUT);
+  //pinMode(M_IN4, OUTPUT);
+  //pinMode(M_ENB, OUTPUT);
 }
 
 void loop() {
   uint8_t buf[RH_ASK_MAX_MESSAGE_LEN];
   uint8_t buflen = sizeof(buf);
 
+   Serial.println("Motor Run");
+analogWrite(ENA, speed);
+      analogWrite(ENB, speed);   
+      digitalWrite(IN1, HIGH);
+      digitalWrite(IN2, LOW);
+      digitalWrite(IN3, HIGH);
+      digitalWrite(IN4, LOW);
+      delay(3000);
   if (driver.recv(buf, &buflen))  // Non-blocking
   {
 
@@ -55,7 +63,7 @@ void loop() {
     // } else {
       analogWrite(ENA, speed);
       analogWrite(ENB, speed);
-      analogWrite(M_ENB, speed);
+      //analogWrite(M_ENB, speed);
     // }
     // MOVEMENT
     if (msg == "Forward") {
@@ -79,14 +87,15 @@ void loop() {
       digitalWrite(IN2, LOW);
       digitalWrite(IN3, LOW);
       digitalWrite(IN4, HIGH);
-    // LIFT
+      } else stop();
+    /* LIFT
     } else if (msg == "Descend") {
       digitalWrite(M_IN3, LOW);
       digitalWrite(M_IN4, HIGH);
     } else if (msg == "Ascend") {
       digitalWrite(M_IN3, HIGH);
       digitalWrite(M_IN4, LOW);
-    } else stop();
+    } else stop(); */
   }
 }
 
@@ -95,6 +104,6 @@ void stop() {
   digitalWrite(IN2, LOW);
   digitalWrite(IN3, LOW);
   digitalWrite(IN4, LOW);
-  digitalWrite(M_IN3, LOW);
-  digitalWrite(M_IN4, LOW);
+  //digitalWrite(M_IN3, LOW);
+  //digitalWrite(M_IN4, LOW);
 }
