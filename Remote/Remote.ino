@@ -1,19 +1,14 @@
 
 #include <RH_ASK.h>
 #include <SPI.h>  // Not actually used but needed to compile
-//Movement
-#define UP 8
+
+#define UP 8  //Movement
 #define RIGHT 4
 #define DOWN 7
 #define LEFT 2
-#define POWER_TX 13
-#define SPEED 9
-// Lift
-//#define ASCEND 11
-//#define DESCEND 13
+#define SPEED A0
 
-int upState, downState, leftState, rightState, speedValue, speedState,
-  powerState, ascendState, descendState;
+int upState, downState, leftState, rightState, speedValue;
 // RH_ASK driver;
 RH_ASK driver(2000, 13, 12, 5);  // ESP8266: do not use pin 11
 
@@ -26,52 +21,43 @@ void setup() {
   pinMode(RIGHT, INPUT_PULLUP);
   pinMode(DOWN, INPUT_PULLUP);
   pinMode(LEFT, INPUT_PULLUP);
-  pinMode(POWER_TX, INPUT);
   pinMode(SPEED, INPUT);
-
-  //pinMode(ASCEND, INPUT);
-  //pinMode(DESCEND, INPUT);
 }
 
 void loop() {
-  const char *msg = "";
-  // String msg;
-  powerState = digitalRead(POWER_TX);
+  uint8_t buffer[2];
+  char *msg1;
+  char *msg2;
+  int *msg;
+
   upState = digitalRead(UP);
   rightState = digitalRead(RIGHT);
   downState = digitalRead(DOWN);
   leftState = digitalRead(LEFT);
-  speedState = analogRead(LEFT);
+  // int states[] = ;
+  int states [] = invert( (int[]){ upState, rightState, downState, leftState });
+  
+  // downState = invert(downState);
+  // leftState = invert(leftState);
+  // rightState = invert(rightState);
 
-  upState = convert(upState);
-  downState = convert(downState);
-  leftState = convert(leftState);
-  rightState = convert(rightState);
-  // ascendState = digitalRead(ASCEND);
-  //descendState = digitalRead(DESCEND);
-  // delay(50);
-  int potValue = analogRead(SPEED);
-  speedValue = map(potValue, 0, 1023, 0, 249);
+  speedValue = analogRead(SPEED);
+  speedValue = map(speedValue, 0, 1023, 0, 249);
 
   if (upState == 1) {
-    msg = "Forward";
+    msg1 = "Forward";
   }
   if (downState == 1) {
-    msg = "Reverse";
+    msg1 = "Reverse";
   }
   if (leftState == 1) {
-    msg = "Left";
+    msg1 = "Left";
   }
   if (rightState == 1) {
-    msg = "Right";
+    msg1 = "Right";
   }
-  /*if (ascendState == 1) {
-    msg = "Ascend";
-  }
-  if (descendState == 1) {
-    msg = "Descend";
-  }*/
-  // msg = "Ascend";
+  buffer[0] = encoder(msg1, strlen(msg1));
+  buffer[1] = speedValue;
 
   Serial.print("Up: ");
   Serial.println(upState);
@@ -81,11 +67,11 @@ void loop() {
   Serial.println(downState);
   Serial.print("Left: ");
   Serial.println(leftState);
-  // Serial.print("Lift: "); Serial.print(ascendState); Serial.println(descendState);
-  // for(int i=0; i<= sizeof(msgi++) {
-  // Serial.print("Message: ");
-  Serial.print(msg);
-  // }
+  Serial.print("Pot: ");
+  Serial.println(speedValue);
+  Serial.print(msg1);
+  Serial.println(buffer);  
+
   Serial.println("\n\n");
 
   // for(int i=0; i < sizeof(msg); i++) {
@@ -95,11 +81,22 @@ void loop() {
   driver.waitPacketSent();
   delay(200);
 }
-int convert(int state) {
-  if (state == 1) {
-    state = 0;
-  } else {
-    state = 1;
+
+int invert(int states[]) {
+  for (int i = 0; i < sizeof(states); i++) {
+    if (states[i] == 1) {
+      states[i] = 0;
+    } else {
+      states[i] = 1;
+    }
   }
-  return state;
+  return states;
 }
+
+int* encoder(char *msg, int *msg) {
+    for (int i = 0; i < strlen(msg); i++) {
+        msg[i] = (int) msg[i];
+    }
+    return msg;
+}
+
