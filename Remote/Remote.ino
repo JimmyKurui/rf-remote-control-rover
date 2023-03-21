@@ -28,7 +28,7 @@ void loop() {
   uint8_t buffer[2];
   char *msg1;
   char *msg2;
-  int *msg;
+  const char *msg;
 
   upState = digitalRead(UP);
   rightState = digitalRead(RIGHT);
@@ -82,7 +82,8 @@ void loop() {
   delay(200);
 }
 
-int invert(int states[]) {
+int invert(int* states) {
+  int* newStates = states;
   for (int i = 0; i < sizeof(states); i++) {
     if (states[i] == 1) {
       states[i] = 0;
@@ -93,10 +94,11 @@ int invert(int states[]) {
   return states;
 }
 
-int* encoder(char *msg, int *msg) {
-    for (int i = 0; i < strlen(msg); i++) {
-        msg[i] = (int) msg[i];
-    }
-    return msg;
-}
+int* encoder(char *msg, int n) {
+    int *x = (int*) malloc(n * sizeof(int));
 
+    for (int i = 0; i < n; i++) {
+        x[i] = (int) msg[i];
+    }
+    return x;
+}
