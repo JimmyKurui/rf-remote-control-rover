@@ -22,3 +22,6 @@ It is an Arduino powered rover enabled with a hydraulic lift to carry and delive
 - Non-electrical tape
 - x4 mini-fans
 - Multimeter
+
+# I Electronics Circuit
+All wiring of the Arduino can be found in this Proteus snippet
